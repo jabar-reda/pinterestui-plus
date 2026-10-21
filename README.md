@@ -7,6 +7,7 @@
 | --- | --- |
 | `pinterest-app-look.user.js` | السكربت نفسه (هذا ما تركّبه). |
 | `pinterest-logo.svg` | شعار Pinterest المستخدم في رأس لوحة الإعدادات وفي مدير السكربتات. |
+| `LICENSE` | رخصة MIT. |
 
 ## التركيب
 
@@ -62,4 +63,4 @@
 
 ## الترخيص
 
-MIT.
+MIT — النص الكامل في [`LICENSE`](LICENSE).
