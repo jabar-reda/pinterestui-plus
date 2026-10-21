@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-pa-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معاينة: Pinterest App Look</title>
+<style>
+  :root {
+    --pa-r: 20px;
+    --pa-r-sm: 12px;
+    --pa-accent: #e60023;
+    --pa-ease: cubic-bezier(.32, .72, 0, 1);
+    --pa-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    --pa-bg: #f6f6f8;
+    --pa-surface: #ffffff;
+    --pa-surface-2: #f0f0f3;
+    --pa-text: #101014;
+    --pa-muted: #6b6b74;
+    --pa-line: rgba(16, 16, 20, .09);
+    --pa-shadow: 0 1px 2px rgba(16, 16, 20, .06), 0 18px 38px -22px rgba(16, 16, 20, .40);
+  }
+
+  html[data-pa-theme="dark"] {
+    --pa-bg: #0b0b0d;
+    --pa-surface: #17171b;
+    --pa-surface-2: #202026;
+    --pa-text: #f4f4f7;
+    --pa-muted: #a2a2ac;
+    --pa-line: rgba(255, 255, 255, .09);
+    --pa-shadow: 0 1px 2px rgba(0, 0, 0, .6), 0 22px 48px -24px rgba(0, 0, 0, .9);
+  }
+
+  html[data-pa-theme="amoled"] {
+    --pa-bg: #000000;
+    --pa-surface: #0e0e11;
+    --pa-surface-2: #16161a;
+    --pa-text: #f7f7fa;
+    --pa-muted: #9c9ca6;
+    --pa-line: rgba(255, 255, 255, .1);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; background: var(--pa-bg); }
+
+  body {
+    color: var(--pa-text);
+    font-family: var(--pa-font);
+    -webkit-font-smoothing: antialiased;
+    transition: background .25s var(--pa-ease), color .25s var(--pa-ease);
+    padding-bottom: 110px;
+  }
+
+  /* ===== الهيدر الزجاجي ===== */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 22px;
+    background: color-mix(in srgb, var(--pa-bg) 80%, transparent);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border-bottom: 1px solid var(--pa-line);
+  }
+
+  .brand { width: 34px; height: 34px; border-radius: 999px; flex: 0 0 auto; }
+
+  .search {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: var(--pa-surface-2);
+    color: var(--pa-muted);
+    font-size: 14px;
+    box-shadow: inset 0 0 0 1px var(--pa-line);
+  }
+
+  .search svg { width: 17px; height: 17px; flex: 0 0 auto; }
+
+  .avatar {
+    width: 34px; height: 34px; border-radius: 999px; flex: 0 0 auto;
+    background: linear-gradient(135deg, #f59e0b, #e60023 55%, #8b5cf6);
+    box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--pa-bg) 70%, transparent);
+  }
+
+  .ghost-btn {
+    width: 38px; height: 38px;
+    display: grid; place-items: center;
+    border: 0; border-radius: 999px;
+    background: transparent; color: var(--pa-muted);
+    cursor: pointer;
+  }
+
+  .ghost-btn:hover { background: color-mix(in srgb, var(--pa-text) 8%, transparent); color: var(--pa-text); }
+  .ghost-btn svg { width: 20px; height: 20px; }
+
+  /* ===== عنوان القسم ===== */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 28px 22px 14px;
+  }
+
+  .section-head h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -.025em;
+  }
+
+  .section-head p { margin: 0; color: var(--pa-muted); font-size: 14px; }
+
+  /* ===== شبكة البطاقات ===== */
+  .feed {
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 0 22px;
+    column-count: 4;
+    column-gap: 18px;
+  }
+
+  @media (max-width: 1100px) { .feed { column-count: 3; } }
+  @media (max-width: 760px) { .feed { column-count: 2; } }
+
+  .card {
+    break-inside: avoid;
+    margin-bottom: 18px;
+    border-radius: var(--pa-r);
+    overflow: hidden;
+    position: relative;
+    background: var(--pa-surface);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .18);
+    transition: transform .24s var(--pa-ease), box-shadow .24s var(--pa-ease);
+    cursor: pointer;
+  }
+
+  .card:hover { transform: translateY(-3px); box-shadow: var(--pa-shadow); }
+
+  .card .art {
+    height: var(--h, 240px);
+    background: var(--art);
+    position: relative;
+  }
+
+  .card .art::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(120% 80% at 20% 0%, rgba(255, 255, 255, .28), transparent 60%);
+  }
+
+  .card .save {
+    position: absolute;
+    top: 10px;
+    inset-inline-end: 10px;
+    padding: 9px 16px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--pa-accent);
+    color: #fff;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity .18s ease, transform .18s var(--pa-ease);
+    cursor: pointer;
+  }
+
+  .card:hover .save { opacity: 1; transform: translateY(0); }
+
+  .card .meta {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 11px 13px 13px;
+  }
+
+  .card .dot {
+    width: 24px; height: 24px; border-radius: 999px; flex: 0 0 auto;
+    background: var(--dot, linear-gradient(135deg, #0a84ff, #8b5cf6));
+  }
+
+  .card .meta span {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ===== الزر العائم ===== */
+  .fab {
+    position: fixed;
+    left: 22px;
+    bottom: 22px;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--pa-line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--pa-surface) 82%, transparent);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    color: var(--pa-text);
+    box-shadow: var(--pa-shadow);
+    cursor: pointer;
+    transition: transform .18s var(--pa-ease);
+  }
+
+  .fab:hover { transform: translateY(-2px); }
+  .fab:active { transform: scale(.94); }
+  .fab svg { width: 22px; height: 22px; }
+
+  /* ===== الشريط السفلي ===== */
+  .dock {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px;
+    border: 1px solid var(--pa-line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--pa-surface) 76%, transparent);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    box-shadow: var(--pa-shadow);
+  }
+
+  .dock button {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--pa-muted);
+    cursor: pointer;
+    transition: background .18s ease, color .18s ease, transform .18s var(--pa-ease);
+  }
+
+  .dock button:hover { background: color-mix(in srgb, var(--pa-text) 8%, transparent); color: var(--pa-text); }
+  .dock button:active { transform: scale(.93); }
+  .dock button[aria-current="page"] { background: color-mix(in srgb, var(--pa-accent) 16%, transparent); color: var(--pa-accent); }
+  .dock svg { width: 22px; height: 22px; }
+
+  /* ===== لوحة الإعدادات ===== */
+  .scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .38);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .24s ease;
+    z-index: 20;
+  }
+
+  .scrim[data-open="1"] { opacity: 1; pointer-events: auto; }
+
+  .sheet {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 21;
+    width: min(420px, calc(100vw - 32px));
+    max-height: 86vh;
+    overflow: auto;
+    padding: 10px 20px 14px;
+    border-radius: 26px;
+    background: var(--pa-surface);
+    border: 1px solid var(--pa-line);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, .38);
+    opacity: 0;
+    transform: translate(-50%, -46%) scale(.98);
+    pointer-events: none;
+    transition: opacity .24s ease, transform .32s var(--pa-ease);
+  }
+
+  .sheet[data-open="1"] { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
+
+  .sheet-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0 4px;
+  }
+
+  .sheet-head h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -.02em; }
+
+  .icon-btn {
+    width: 32px; height: 32px;
+    display: grid; place-items: center;
+    border: 0; border-radius: 999px;
+    background: var(--pa-surface-2); color: var(--pa-muted);
+    font-size: 14px; cursor: pointer;
+  }
+
+  .sheet-body { display: grid; gap: 18px; padding: 12px 0 4px; }
+  .field { display: grid; gap: 8px; }
+
+  .field-label {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; font-weight: 600; color: var(--pa-muted);
+  }
+
+  .field-label output { color: var(--pa-text); font-variant-numeric: tabular-nums; }
+
+  .segmented {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px;
+    padding: 3px; border-radius: 11px; background: var(--pa-surface-2);
+  }
+
+  .segmented button {
+    border: 0; padding: 7px 4px; border-radius: 8px;
+    background: transparent; color: var(--pa-muted);
+    font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  }
+
+  .segmented button[aria-checked="true"] {
+    background: color-mix(in srgb, var(--pa-text) 8%, var(--pa-surface));
+    color: var(--pa-text);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .16);
+  }
+
+  .swatches { display: flex; gap: 12px; }
+
+  .swatch {
+    width: 28px; height: 28px; border: 0; border-radius: 999px;
+    background: var(--swatch); cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12);
+    transition: transform .16s var(--pa-ease);
+  }
+
+  .swatch:hover { transform: scale(1.08); }
+  .swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--pa-surface), 0 0 0 4px var(--swatch); }
+
+  input[type="range"] {
+    width: 100%; height: 28px; margin: 0; appearance: none; background: transparent;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px; border-radius: 999px; background: var(--pa-surface-2);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none; width: 22px; height: 22px; margin-top: -8px;
+    border-radius: 999px; background: #fff; border: 1px solid rgba(0, 0, 0, .12);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .28);
+  }
+
+  .list { display: grid; gap: 2px; margin: 0 -8px; }
+
+  .row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding: 11px 8px; border-radius: 12px;
+    font-size: 14.5px; font-weight: 500; cursor: pointer;
+  }
+
+  .row:hover { background: color-mix(in srgb, var(--pa-text) 5%, transparent); }
+
+  .row input[type="checkbox"] {
+    appearance: none; flex: 0 0 auto;
+    width: 51px; height: 31px; margin: 0;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--pa-text) 18%, transparent);
+    position: relative; cursor: pointer;
+    transition: background .22s ease;
+    direction: ltr;
+  }
+
+  .row input[type="checkbox"]::after {
+    content: ""; position: absolute; top: 2px; left: 2px;
+    width: 27px; height: 27px; border-radius: 999px; background: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, .3);
+    transition: transform .22s var(--pa-ease);
+  }
+
+  .row input[type="checkbox"]:checked { background: var(--pa-accent); }
+  .row input[type="checkbox"]:checked::after { transform: translateX(20px); }
+
+  .sheet-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0 4px; margin-top: 10px; border-top: 1px solid var(--pa-line);
+  }
+
+  .reset {
+    border: 0; padding: 8px 14px; border-radius: 999px;
+    background: var(--pa-surface-2); color: var(--pa-text);
+    font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+
+  .version { font-size: 11.5px; color: var(--pa-muted); }
+
+  .hint {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--pa-surface);
+    border: 1px solid var(--pa-line);
+    color: var(--pa-muted);
+    font-size: 12px;
+    box-shadow: var(--pa-shadow);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img class="brand" src="pinterest-logo.svg" alt="">
+  <div class="search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.4"/><path d="m20 20-4.2-4.2"/></svg>
+    <span>ابحث عن فكرة</span>
+  </div>
+  <button class="ghost-btn" id="theme-toggle" aria-label="تبديل الوضع">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+  </button>
+  <div class="avatar"></div>
+</header>
+
+<div class="section-head">
+  <h1>أفكار اليوم</h1>
+  <p>بطاقات دائرية، ظلال ناعمة، وهيدر زجاجي</p>
+</div>
+
+<main class="feed" id="feed"></main>
+
+<button class="fab" id="fab" aria-label="إعدادات المظهر">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h8M16.5 8H20M4 16h4M12.5 16H20"/><circle cx="14" cy="8" r="2.1"/><circle cx="10" cy="16" r="2.1"/></svg>
+</button>
+
+<nav class="dock" aria-label="تنقل سريع">
+  <button aria-current="page" aria-label="الرئيسية">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.6 12 4l8 6.6V19a1.4 1.4 0 0 1-1.4 1.4h-4.1v-6h-5v6H5.4A1.4 1.4 0 0 1 4 19z"/></svg>
+  </button>
+  <button aria-label="استكشاف">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.2"/><path d="m14.9 9.1-1.7 4.1-4.1 1.7 1.7-4.1z"/></svg>
+  </button>
+  <button aria-label="بحث">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.4"/><path d="m20 20-4.2-4.2"/></svg>
+  </button>
+  <button aria-label="إنشاء Pin">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5.5v13M5.5 12h13"/></svg>
+  </button>
+  <button aria-label="الإعدادات" id="dock-settings">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h8M16.5 8H20M4 16h4M12.5 16H20"/><circle cx="14" cy="8" r="2.1"/><circle cx="10" cy="16" r="2.1"/></svg>
+  </button>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="إعدادات المظهر">
+  <div class="sheet-head">
+    <h2>مظهر Pinterest</h2>
+    <button class="icon-btn" id="close" aria-label="إغلاق">✕</button>
+  </div>
+
+  <div class="sheet-body">
+    <div class="field">
+      <span class="field-label">الوضع</span>
+      <div class="segmented" role="radiogroup" aria-label="وضع الألوان">
+        <button role="radio" data-theme="system" aria-checked="false">تلقائي</button>
+        <button role="radio" data-theme="light" aria-checked="false">فاتح</button>
+        <button role="radio" data-theme="dark" aria-checked="true">داكن</button>
+        <button role="radio" data-theme="amoled" aria-checked="false">AMOLED</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">لون التمييز</span>
+      <div class="swatches">
+        <button class="swatch" data-accent="#e60023" style="--swatch:#e60023" aria-label="أحمر" aria-pressed="true"></button>
+        <button class="swatch" data-accent="#0a84ff" style="--swatch:#0a84ff" aria-label="أزرق" aria-pressed="false"></button>
+        <button class="swatch" data-accent="#8b5cf6" style="--swatch:#8b5cf6" aria-label="بنفسجي" aria-pressed="false"></button>
+        <button class="swatch" data-accent="#10b981" style="--swatch:#10b981" aria-label="أخضر" aria-pressed="false"></button>
+        <button class="swatch" data-accent="#f59e0b" style="--swatch:#f59e0b" aria-label="برتقالي" aria-pressed="false"></button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="radius">استدارة الحواف <output id="radius-value">20</output></label>
+      <input id="radius" type="range" min="8" max="28" step="1" value="20">
+    </div>
+
+    <div class="list">
+      <label class="row"><span>تعتيم الأسطح الفاتحة</span><input type="checkbox" checked></label>
+      <label class="row"><span>إخفاء المنشورات المروّجة</span><input type="checkbox" checked></label>
+      <label class="row"><span>إخفاء وحدات التسوق</span><input type="checkbox" checked></label>
+      <label class="row"><span>رأس صفحة مضغوط</span><input type="checkbox"></label>
+      <label class="row"><span>الشريط السفلي العائم</span><input type="checkbox" checked></label>
+    </div>
+  </div>
+
+  <div class="sheet-foot">
+    <button class="reset">استعادة الافتراضي</button>
+    <span class="version">v1.0.0</span>
+  </div>
+</section>
+
+<script>
+  // بطاقات وهمية: التدرّجات تغني عن تحميل صور خارجية في هذه المعاينة.
+  const palettes = [
+    ["#ff9a9e", "#fad0c4"], ["#a18cd1", "#fbc2eb"], ["#f6d365", "#fda085"],
+    ["#84fab0", "#8fd3f4"], ["#e0c3fc", "#8ec5fc"], ["#f093fb", "#f5576c"],
+    ["#4facfe", "#00f2fe"], ["#43e97b", "#38f9d7"], ["#fa709a", "#fee140"],
+    ["#30cfd0", "#330867"], ["#a8edea", "#fed6e3"], ["#fbc2eb", "#a6c1ee"],
+  ];
+
+  const titles = [
+    "لوحة مهام بسيطة", "ألوان هادئة لغرفة النوم", "وصفة سريعة للعشاء",
+    "خط عربي للعناوين", "ترتيب مكتب صغير", "أفكار تصوير بالهاتف",
+    "حديقة على الشرفة", "واجهة تطبيق نظيفة", "إضاءة دافئة للجلسات",
+    "سفر خفيف", "دفتر ملاحظات يدوي", "خلفيات سطح المكتب",
+  ];
+
+  const feed = document.getElementById("feed");
+
+  titles.forEach((title, index) => {
+    const [from, to] = palettes[index % palettes.length];
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="art" style="--h:${190 + ((index * 47) % 170)}px; --art:linear-gradient(135deg, ${from}, ${to})">
+        <button class="save">حفظ</button>
+      </div>
+      <div class="meta">
+        <span class="dot" style="--dot:linear-gradient(135deg, ${to}, ${from})"></span>
+        <span>${title}</span>
+      </div>`;
+    feed.append(card);
+  });
+
+  const root = document.documentElement;
+  const sheet = document.getElementById("sheet");
+  const scrim = document.getElementById("scrim");
+
+  function setTheme(theme) {
+    root.dataset.paTheme = theme;
+    document.querySelectorAll("[data-theme]").forEach((button) => {
+      button.setAttribute("aria-checked", String(button.dataset.theme === theme));
+    });
+  }
+
+  document.querySelectorAll("[data-theme]").forEach((button) => {
+    button.addEventListener("click", () => setTheme(button.dataset.theme));
+  });
+
+  document.querySelectorAll(".swatch").forEach((button) => {
+    button.addEventListener("click", () => {
+      root.style.setProperty("--pa-accent", button.dataset.accent);
+      document.querySelectorAll(".swatch").forEach((swatch) => {
+        swatch.setAttribute("aria-pressed", String(swatch === button));
+      });
+    });
+  });
+
+  const radiusInput = document.getElementById("radius");
+  radiusInput.addEventListener("input", () => {
+    root.style.setProperty("--pa-r", radiusInput.value + "px");
+    document.getElementById("radius-value").textContent = radiusInput.value;
+  });
+
+  document.getElementById("theme-toggle").addEventListener("click", () => {
+    setTheme(root.dataset.paTheme === "dark" ? "light" : "dark");
+  });
+
+  function openSheet() {
+    sheet.dataset.open = "1";
+    scrim.dataset.open = "1";
+  }
+
+  function closeSheet() {
+    sheet.dataset.open = "0";
+    scrim.dataset.open = "0";
+  }
+
+  document.getElementById("fab").addEventListener("click", openSheet);
+  document.getElementById("dock-settings").addEventListener("click", openSheet);
+  document.getElementById("close").addEventListener("click", closeSheet);
+  scrim.addEventListener("click", closeSheet);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeSheet();
+  });
+
+  // ?sheet=1 يفتح اللوحة مباشرة، مفيد لالتقاط لقطة للتصميم.
+  if (new URLSearchParams(location.search).has("sheet")) openSheet();
+</script>
+</body>
+</html>
