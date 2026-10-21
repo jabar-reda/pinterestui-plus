@@ -2,11 +2,12 @@
 // @name         Pinterest App Look
 // @name:ar      بنترست بمظهر تطبيق الآيفون
 // @namespace    https://github.com/jabar/pinterest-app-look
-// @version      1.0.0
+// @version      1.1.0
 // @description  iOS-style Pinterest: dark mode, rounded cards, glass header, floating dock and a settings sheet.
 // @description:ar  إعادة تصميم Pinterest على الويب بمظهر تطبيق iOS: وضع مظلم، بطاقات دائرية، شريط علوي زجاجي، شريط سفلي عائم، ولوحة إعدادات.
 // @author       Jabar
 // @license      MIT
+// @icon         data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjQkQwODFDIiByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+UGludGVyZXN0PC90aXRsZT48cGF0aCBkPSJNMTIuMDE3IDBDNS4zOTYgMCAuMDI5IDUuMzY3LjAyOSAxMS45ODdjMCA1LjA3OSAzLjE1OCA5LjQxNyA3LjYxOCAxMS4xNjItLjEwNS0uOTQ5LS4xOTktMi40MDMuMDQxLTMuNDM5LjIxOS0uOTM3IDEuNDA2LTUuOTU3IDEuNDA2LTUuOTU3cy0uMzU5LS43Mi0uMzU5LTEuNzgxYzAtMS42NjMuOTY3LTIuOTExIDIuMTY4LTIuOTExIDEuMDI0IDAgMS41MTguNzY5IDEuNTE4IDEuNjg4IDAgMS4wMjktLjY1MyAyLjU2Ny0uOTkyIDMuOTkyLS4yODUgMS4xOTMuNiAyLjE2NSAxLjc3NSAyLjE2NSAyLjEyOCAwIDMuNzY4LTIuMjQ1IDMuNzY4LTUuNDg3IDAtMi44NjEtMi4wNjMtNC44NjktNS4wMDgtNC44NjktMy40MSAwLTUuNDA5IDIuNTYyLTUuNDA5IDUuMTk5IDAgMS4wMzMuMzk0IDIuMTQzLjg4OSAyLjc0MS4wOTkuMTIuMTEyLjIyNS4wODUuMzQ1LS4wOS4zNzUtLjI5MyAxLjE5OS0uMzM0IDEuMzYzLS4wNTMuMjI1LS4xNzIuMjcxLS40MDEuMTY1LTEuNDk1LS42OS0yLjQzMy0yLjg3OC0yLjQzMy00LjY0NiAwLTMuNzc2IDIuNzQ4LTcuMjUyIDcuOTItNy4yNTIgNC4xNTggMCA3LjM5MiAyLjk2NyA3LjM5MiA2LjkyMyAwIDQuMTM1LTIuNjA3IDcuNDYyLTYuMjMzIDcuNDYyLTEuMjE0IDAtMi4zNTQtLjYyOS0yLjc1OC0xLjM3OWwtLjc0OSAyLjg0OGMtLjI2OSAxLjA0NS0xLjAwNCAyLjM1Mi0xLjQ5OCAzLjE0NiAxLjEyMy4zNDUgMi4zMDYuNTM1IDMuNTUuNTM1IDYuNjA3IDAgMTEuOTg1LTUuMzY1IDExLjk4NS0xMS45ODdDMjMuOTcgNS4zOSAxOC41OTIuMDI2IDExLjk4NS4wMjZMMTIuMDE3IDB6Ii8+PC9zdmc+
 // @match        https://pinterest.com/*
 // @match        https://*.pinterest.com/*
 // @match        https://*.pinterest.co.uk/*
@@ -34,7 +35,7 @@
 // ==/UserScript==
 
 /*
-  Pinterest App Look — v1.0.0
+  Pinterest App Look — v1.1.0
   ---------------------------
   الفكرة: Pinterest على الويب يستخدم ألوانًا صلبة وزوايا حادة ومساحات ضيقة.
   هذا السكربت يستبدل تلك الطبقة البصرية بلغة تصميم iOS:
@@ -56,6 +57,7 @@
   const STORAGE_KEY = "pinterest-app-look.settings.v1";
   const STYLE_ID = "pa-page-style";
   const HOST_ID = "pa-ui-host";
+  const VERSION = "1.1.0";
 
   const ACCENTS = {
     pinterest: "#e60023",
@@ -124,9 +126,6 @@
   const PAGE_CSS = `
 /* ===== 1) رموز التصميم ===== */
 :root {
-  --pa-r: 20px;
-  --pa-r-sm: 12px;
-  --pa-r-lg: 30px;
   --pa-accent: #e60023;
   --pa-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --pa-ease: cubic-bezier(.32, .72, 0, 1);
@@ -139,7 +138,6 @@
   --pa-muted: #6b6b74;
   --pa-line: rgba(16, 16, 20, .09);
   --pa-shadow: 0 1px 2px rgba(16, 16, 20, .06), 0 18px 38px -22px rgba(16, 16, 20, .40);
-  --pa-shadow-soft: 0 1px 2px rgba(16, 16, 20, .05);
 }
 
 html[data-pa-theme="dark"] {
@@ -150,7 +148,6 @@ html[data-pa-theme="dark"] {
   --pa-muted: #a2a2ac;
   --pa-line: rgba(255, 255, 255, .09);
   --pa-shadow: 0 1px 2px rgba(0, 0, 0, .60), 0 22px 48px -24px rgba(0, 0, 0, .90);
-  --pa-shadow-soft: 0 1px 2px rgba(0, 0, 0, .50);
 }
 
 html[data-pa-theme="amoled"] {
@@ -161,7 +158,6 @@ html[data-pa-theme="amoled"] {
   --pa-muted: #9c9ca6;
   --pa-line: rgba(255, 255, 255, .10);
   --pa-shadow: 0 1px 2px rgba(0, 0, 0, .80), 0 22px 48px -24px rgba(0, 0, 0, 1);
-  --pa-shadow-soft: 0 1px 2px rgba(0, 0, 0, .70);
 }
 
 /* ===== 2) الأسطح الأساسية ===== */
@@ -324,6 +320,15 @@ html[data-pa-hide-shopping="1"] [data-test-id="shopping-button"] {
 html[data-pa-dock="1"] body {
   padding-bottom: 96px !important;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-grid-item]:hover > div {
+    transform: none;
+  }
+  button:active {
+    transform: none;
+  }
+}
 `;
 
   function injectPageStyle() {
@@ -379,8 +384,8 @@ html[data-pa-dock="1"] body {
     let budget = 1200;
 
     for (const element of document.querySelectorAll(SURFACE_SELECTOR)) {
-      if (budget-- <= 0) break;
       if (inspectedNodes.has(element) || MEDIA_TAGS.has(element.tagName)) continue;
+      if (budget-- <= 0) break;
 
       inspectedNodes.add(element);
 
@@ -500,7 +505,7 @@ button {
   border-radius: 26px;
   box-shadow: 0 30px 80px rgba(0, 0, 0, .38);
   opacity: 0;
-  transform: translateY(14px) scale(.98);
+  transform: translateY(-50%) scale(.98);
   transition: opacity .24s ease, transform .32s var(--pa-ease, ease);
   pointer-events: auto;
   overscroll-behavior: contain;
@@ -508,7 +513,7 @@ button {
 
 .pa-sheet[data-open="1"] {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(-50%) scale(1);
 }
 
 .pa-sheet[hidden] {
@@ -532,6 +537,13 @@ button {
   font-size: 20px;
   font-weight: 700;
   letter-spacing: -.02em;
+}
+
+.pa-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  flex: 0 0 auto;
 }
 
 .pa-icon-btn {
@@ -898,6 +910,7 @@ input[type="range"]::-moz-range-thumb {
 
 <section class="pa-sheet" data-pa-sheet role="dialog" aria-modal="true" aria-labelledby="pa-sheet-title" dir="rtl" hidden>
   <header class="pa-sheet-head">
+    <img class="pa-logo" src="data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjQkQwODFDIiByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+UGludGVyZXN0PC90aXRsZT48cGF0aCBkPSJNMTIuMDE3IDBDNS4zOTYgMCAuMDI5IDUuMzY3LjAyOSAxMS45ODdjMCA1LjA3OSAzLjE1OCA5LjQxNyA3LjYxOCAxMS4xNjItLjEwNS0uOTQ5LS4xOTktMi40MDMuMDQxLTMuNDM5LjIxOS0uOTM3IDEuNDA2LTUuOTU3IDEuNDA2LTUuOTU3cy0uMzU5LS43Mi0uMzU5LTEuNzgxYzAtMS42NjMuOTY3LTIuOTExIDIuMTY4LTIuOTExIDEuMDI0IDAgMS41MTguNzY5IDEuNTE4IDEuNjg4IDAgMS4wMjktLjY1MyAyLjU2Ny0uOTkyIDMuOTkyLS4yODUgMS4xOTMuNiAyLjE2NSAxLjc3NSAyLjE2NSAyLjEyOCAwIDMuNzY4LTIuMjQ1IDMuNzY4LTUuNDg3IDAtMi44NjEtMi4wNjMtNC44NjktNS4wMDgtNC44NjktMy40MSAwLTUuNDA5IDIuNTYyLTUuNDA5IDUuMTk5IDAgMS4wMzMuMzk0IDIuMTQzLjg4OSAyLjc0MS4wOTkuMTIuMTEyLjIyNS4wODUuMzQ1LS4wOS4zNzUtLjI5MyAxLjE5OS0uMzM0IDEuMzYzLS4wNTMuMjI1LS4xNzIuMjcxLS40MDEuMTY1LTEuNDk1LS42OS0yLjQzMy0yLjg3OC0yLjQzMy00LjY0NiAwLTMuNzc2IDIuNzQ4LTcuMjUyIDcuOTItNy4yNTIgNC4xNTggMCA3LjM5MiAyLjk2NyA3LjM5MiA2LjkyMyAwIDQuMTM1LTIuNjA3IDcuNDYyLTYuMjMzIDcuNDYyLTEuMjE0IDAtMi4zNTQtLjYyOS0yLjc1OC0xLjM3OWwtLjc0OSAyLjg0OGMtLjI2OSAxLjA0NS0xLjAwNCAyLjM1Mi0xLjQ5OCAzLjE0NiAxLjEyMy4zNDUgMi4zMDYuNTM1IDMuNTUuNTM1IDYuNjA3IDAgMTEuOTg1LTUuMzY1IDExLjk4NS0xMS45ODdDMjMuOTcgNS4zOSAxOC41OTIuMDI2IDExLjk4NS4wMjZMMTIuMDE3IDB6Ii8+PC9zdmc+" alt="Pinterest" width="28" height="28">
     <h2 id="pa-sheet-title">مظهر Pinterest</h2>
     <button type="button" class="pa-icon-btn" data-pa-close aria-label="إغلاق الإعدادات">✕</button>
   </header>
@@ -955,7 +968,7 @@ input[type="range"]::-moz-range-thumb {
 
   <footer class="pa-sheet-foot">
     <button type="button" class="pa-reset" data-pa-reset>استعادة الافتراضي</button>
-    <span class="pa-version">v1.0.0</span>
+    <span class="pa-version">v1.1.0</span>
   </footer>
 </section>
 
@@ -1133,7 +1146,7 @@ input[type="range"]::-moz-range-thumb {
 
   function focusPinterestSearch() {
     const input = document.querySelector(
-      'input[name="searchBoxInput"], [data-test-id="search-box"] input, input[placeholder]'
+      'input[name="searchBoxInput"], [data-test-id="search-box"] input'
     );
 
     if (input instanceof HTMLInputElement) {
