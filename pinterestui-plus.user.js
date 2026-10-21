@@ -30,6 +30,8 @@
 // @grant        GM_registerMenuCommand
 // @run-at       document-start
 // @noframes
+// @updateURL    https://raw.githubusercontent.com/jabar-reda/pinterestui-plus/main/pinterestui-plus.user.js
+// @downloadURL  https://raw.githubusercontent.com/jabar-reda/pinterestui-plus/main/pinterestui-plus.user.js
 // ==/UserScript==
 
 /*
