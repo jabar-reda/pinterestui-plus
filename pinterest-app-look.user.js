@@ -1,10 +1,8 @@
 // ==UserScript==
 // @name         Pinterest App Look
-// @name:ar      بنترست بمظهر تطبيق الآيفون
 // @namespace    https://github.com/jabar/pinterest-app-look
-// @version      1.1.0
+// @version      1.2.0
 // @description  iOS-style Pinterest: dark mode, rounded cards, glass header, floating dock and a settings sheet.
-// @description:ar  إعادة تصميم Pinterest على الويب بمظهر تطبيق iOS: وضع مظلم، بطاقات دائرية، شريط علوي زجاجي، شريط سفلي عائم، ولوحة إعدادات.
 // @author       Jabar
 // @license      MIT
 // @icon         data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjQkQwODFDIiByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+UGludGVyZXN0PC90aXRsZT48cGF0aCBkPSJNMTIuMDE3IDBDNS4zOTYgMCAuMDI5IDUuMzY3LjAyOSAxMS45ODdjMCA1LjA3OSAzLjE1OCA5LjQxNyA3LjYxOCAxMS4xNjItLjEwNS0uOTQ5LS4xOTktMi40MDMuMDQxLTMuNDM5LjIxOS0uOTM3IDEuNDA2LTUuOTU3IDEuNDA2LTUuOTU3cy0uMzU5LS43Mi0uMzU5LTEuNzgxYzAtMS42NjMuOTY3LTIuOTExIDIuMTY4LTIuOTExIDEuMDI0IDAgMS41MTguNzY5IDEuNTE4IDEuNjg4IDAgMS4wMjktLjY1MyAyLjU2Ny0uOTkyIDMuOTkyLS4yODUgMS4xOTMuNiAyLjE2NSAxLjc3NSAyLjE2NSAyLjEyOCAwIDMuNzY4LTIuMjQ1IDMuNzY4LTUuNDg3IDAtMi44NjEtMi4wNjMtNC44NjktNS4wMDgtNC44NjktMy40MSAwLTUuNDA5IDIuNTYyLTUuNDA5IDUuMTk5IDAgMS4wMzMuMzk0IDIuMTQzLjg4OSAyLjc0MS4wOTkuMTIuMTEyLjIyNS4wODUuMzQ1LS4wOS4zNzUtLjI5MyAxLjE5OS0uMzM0IDEuMzYzLS4wNTMuMjI1LS4xNzIuMjcxLS40MDEuMTY1LTEuNDk1LS42OS0yLjQzMy0yLjg3OC0yLjQzMy00LjY0NiAwLTMuNzc2IDIuNzQ4LTcuMjUyIDcuOTItNy4yNTIgNC4xNTggMCA3LjM5MiAyLjk2NyA3LjM5MiA2LjkyMyAwIDQuMTM1LTIuNjA3IDcuNDYyLTYuMjMzIDcuNDYyLTEuMjE0IDAtMi4zNTQtLjYyOS0yLjc1OC0xLjM3OWwtLjc0OSAyLjg0OGMtLjI2OSAxLjA0NS0xLjAwNCAyLjM1Mi0xLjQ5OCAzLjE0NiAxLjEyMy4zNDUgMi4zMDYuNTM1IDMuNTUuNTM1IDYuNjA3IDAgMTEuOTg1LTUuMzY1IDExLjk4NS0xMS45ODdDMjMuOTcgNS4zOSAxOC41OTIuMDI2IDExLjk4NS4wMjZMMTIuMDE3IDB6Ii8+PC9zdmc+
@@ -35,29 +33,29 @@
 // ==/UserScript==
 
 /*
-  Pinterest App Look — v1.1.0
+  Pinterest App Look — v1.2.0
   ---------------------------
-  الفكرة: Pinterest على الويب يستخدم ألوانًا صلبة وزوايا حادة ومساحات ضيقة.
-  هذا السكربت يستبدل تلك الطبقة البصرية بلغة تصميم iOS:
-  زجاج ضبابي، زوايا دائرية، ظلال ناعمة، حركة قصيرة، وشريط تنقل عائم.
+  The idea: Pinterest on the web uses flat colors, sharp corners and tight spacing.
+  This script replaces that visual layer with the iOS design language:
+  frosted glass, rounded corners, soft shadows, short motion and a floating tab bar.
 
-  بنية الملف:
-    1) الإعدادات الافتراضية + التخزين
-    2) حساب الثيم الفعلي (تلقائي / فاتح / داكن / AMOLED)
-    3) CSS الصفحة (حقن مرة واحدة)
-    4) تلوين الأسطح البيضاء التي لا يمكن الوصول إليها بالـ CSS وحده
-    5) واجهة الإعدادات + الشريط العائم (داخل Shadow DOM حتى لا تتعارض مع Pinterest)
+  File structure:
+    1) Default settings + storage
+    2) Resolving the effective theme (system / light / dark / AMOLED)
+    3) Page CSS (injected once)
+    4) Painting white surfaces that CSS alone cannot reach
+    5) Settings UI + floating dock (inside a Shadow DOM so Pinterest cannot clash with it)
 */
 
 (() => {
   "use strict";
 
-  /* ---------- 1. الإعدادات ---------- */
+  /* ---------- 1. Settings ---------- */
 
   const STORAGE_KEY = "pinterest-app-look.settings.v1";
   const STYLE_ID = "pa-page-style";
   const HOST_ID = "pa-ui-host";
-  const VERSION = "1.1.0";
+  const VERSION = "1.2.0";
 
   const ACCENTS = {
     pinterest: "#e60023",
@@ -71,7 +69,7 @@
     theme: "system",          // system | light | dark | amoled
     accent: "pinterest",
     radius: 20,
-    deepDark: true,           // تلوين الأسطح البيضاء غير القابلة للوصول بالـ CSS
+    deepDark: true,           // paint white surfaces that CSS cannot reach
     hidePromoted: true,
     hideShopping: true,
     compactHeader: false,
@@ -90,7 +88,7 @@
     }
   }
 
-  // التخزين يمكن أن يُفسد أو يُعدَّل يدويًا، لذلك كل قيمة تُفحص قبل الاستخدام.
+  // Storage can be corrupted or hand-edited, so every value is checked before use.
   function sanitizeSettings(input) {
     const clean = { ...DEFAULTS };
     clean.theme = ["system", "light", "dark", "amoled"].includes(input.theme) ? input.theme : DEFAULTS.theme;
@@ -104,11 +102,11 @@
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
     } catch (error) {
-      /* التخزين ممتلئ أو محجوب: نكمل بالجلسة الحالية فقط. */
+      /* Storage is full or blocked: keep going with the current session only. */
     }
   }
 
-  /* ---------- 2. الثيم ---------- */
+  /* ---------- 2. Theme ---------- */
 
   const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
 
@@ -121,16 +119,16 @@
     const resolved = resolveTheme(theme);
     return resolved === "dark" || resolved === "amoled";
   }
-  /* ---------- 3. CSS الصفحة ---------- */
+  /* ---------- 3. Page CSS ---------- */
 
   const PAGE_CSS = `
-/* ===== 1) رموز التصميم ===== */
+/* ===== 1) Design tokens ===== */
 :root {
   --pa-accent: #e60023;
   --pa-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --pa-ease: cubic-bezier(.32, .72, 0, 1);
 
-  /* الوضع الفاتح */
+  /* Light theme */
   --pa-bg: #f6f6f8;
   --pa-surface: #ffffff;
   --pa-surface-2: #f0f0f3;
@@ -160,7 +158,7 @@ html[data-pa-theme="amoled"] {
   --pa-shadow: 0 1px 2px rgba(0, 0, 0, .80), 0 22px 48px -24px rgba(0, 0, 0, 1);
 }
 
-/* ===== 2) الأسطح الأساسية ===== */
+/* ===== 2) Base surfaces ===== */
 html, body {
   background: var(--pa-bg) !important;
 }
@@ -177,7 +175,7 @@ body {
   background: var(--pa-bg) !important;
 }
 
-/* ===== 3) الشريط العلوي الزجاجي ===== */
+/* ===== 3) Glass header ===== */
 header,
 [role="banner"],
 [data-test-id="header"],
@@ -196,7 +194,7 @@ html[data-pa-compact="1"] header {
   padding-block: 4px !important;
 }
 
-/* ===== 4) البطاقات ===== */
+/* ===== 4) Cards ===== */
 [data-grid-item] > div,
 [data-test-id="pin"] > div {
   border-radius: var(--pa-r) !important;
@@ -213,7 +211,7 @@ html[data-pa-compact="1"] header {
   border-radius: var(--pa-r) !important;
 }
 
-/* ===== 5) الأزرار والحقول ===== */
+/* ===== 5) Buttons and fields ===== */
 button {
   border-radius: 999px !important;
   transition: transform .16s var(--pa-ease), filter .16s var(--pa-ease);
@@ -245,7 +243,7 @@ textarea:focus-visible,
   outline-offset: 2px;
 }
 
-/* ===== 6) النوافذ والقوائم ===== */
+/* ===== 6) Dialogs and menus ===== */
 [role="dialog"] {
   background: var(--pa-surface) !important;
   border-radius: var(--pa-r-lg) !important;
@@ -259,17 +257,18 @@ textarea:focus-visible,
   box-shadow: var(--pa-shadow) !important;
 }
 
-/* ===== 7) حبر النص في الوضع المظلم ===== */
+/* ===== 7) Text color in dark mode ===== */
 html[data-pa-dark="1"] :where(p, h1, h2, h3, h4, h5, h6, li, label, span, div, a, strong, em, small, figcaption) {
   color: var(--pa-text) !important;
 }
 
-/* الأسطح التي يلوّنها الجافاسكربت (الفلاتر التي لا يصلها CSS) */
+/* Surfaces painted by JavaScript (the ones CSS cannot reach) */
 [data-pa-surface="1"] {
   background-color: var(--pa-surface) !important;
 }
 
-/* ===== 8) المنشورات المروّجة والتسوق ===== */
+/* ===== 8) Promoted pins and shopping ===== */
+/* "ممول" is how Pinterest labels sponsored pins in Arabic, so it is matched too. */
 html[data-pa-hide-promoted="1"] [data-grid-item]:has([data-test-id="oneTapPromotedPin"]),
 html[data-pa-hide-promoted="1"] [data-grid-item]:has([aria-label*="Promoted" i]),
 html[data-pa-hide-promoted="1"] [data-grid-item]:has([aria-label*="Sponsored" i]),
@@ -285,7 +284,7 @@ html[data-pa-hide-shopping="1"] [data-test-id="shopping-button"] {
   display: none !important;
 }
 
-/* ===== 9) تفاصيل صغيرة ===== */
+/* ===== 9) Small details ===== */
 ::selection {
   background: color-mix(in srgb, var(--pa-accent) 30%, transparent);
 }
@@ -339,13 +338,14 @@ html[data-pa-dock="1"] body {
     (document.head || document.documentElement).appendChild(style);
   }
 
-  /* ---------- 4. تلوين الأسطح البيضاء ---------- */
+  /* ---------- 4. Painting white surfaces ---------- */
 
-  // Pinterest يبني ألوانه عبر كلاسات مولّدة، فلا يمكن لأي CSS ثابت أن يعرف كل سطح.
-  // نقرأ اللون المحسوب لعناصر "ذات معنى" (لها data-test-id أو role) ونعلّم الأبيض منها
-  // بسمة data-pa-surface، ثم يتولى CSS تلوينها. هذا يحافظ على الأداء: فحص محدود ومرّة واحدة لكل عنصر.
+  // Pinterest builds its colors with generated classes, so no static CSS can know every surface.
+  // We read the computed color of "meaningful" elements (those with a data-test-id or a role) and
+  // tag the white ones with data-pa-surface, then let CSS paint them. This keeps the cost down:
+  // a bounded scan, and each element is measured only once.
 
-  // نتذكّر كل عنصر فحصناه (أبيض أو لا) حتى لا نعيد قياسه في كل تمريرة.
+  // We remember every element we inspected (white or not) so it is never measured twice.
   let inspectedNodes = new WeakSet();
   let paintTimer = 0;
 
@@ -379,7 +379,7 @@ html[data-pa-dock="1"] body {
       return;
     }
 
-    // نقرأ أولًا ثم نكتب: خلط القراءة والكتابة داخل حلقة واحدة يسبب إعادة حساب تخطيط لكل عنصر.
+    // Read first, then write: mixing reads and writes in one loop forces a layout recalculation per element.
     const toPaint = [];
     let budget = 1200;
 
@@ -391,7 +391,7 @@ html[data-pa-dock="1"] body {
 
       const rect = element.getBoundingClientRect();
       if (rect.width < 24 || rect.height < 16) continue;
-      // نتجاهل الحاويات العملاقة: تلوينها يغطي الصفحة كلها بدل عنصر واحد.
+      // Skip giant containers: painting them covers the whole page instead of one element.
       if (rect.width > window.innerWidth * 0.92 && rect.height > window.innerHeight * 0.92) continue;
 
       if (isNearWhite(getComputedStyle(element).backgroundColor)) toPaint.push(element);
@@ -407,7 +407,7 @@ html[data-pa-dock="1"] body {
     inspectedNodes = new WeakSet();
   }
 
-  // نؤجل الفحص بعد آخر تغيير في الصفحة: Pinterest يضيف بطاقات باستمرار أثناء التمرير.
+  // We defer the scan until the page stops changing: Pinterest keeps adding cards while you scroll.
   function scheduleSurfacePaint() {
     clearTimeout(paintTimer);
     paintTimer = window.setTimeout(() => {
@@ -418,7 +418,7 @@ html[data-pa-dock="1"] body {
       }
     }, 250);
   }
-  /* ---------- 5. تطبيق الإعدادات ---------- */
+  /* ---------- 5. Applying settings ---------- */
 
   let settings = loadSettings();
 
@@ -445,13 +445,13 @@ html[data-pa-dock="1"] body {
     scheduleSurfacePaint();
   }
 
-  /* ---------- 6. واجهة الإعدادات (Shadow DOM) ---------- */
+  /* ---------- 6. Settings UI (Shadow DOM) ---------- */
 
-  // لماذا Shadow DOM؟ لأن Pinterest يحمّل CSS عامًا يطال كل عنصر في الصفحة.
-  // داخل الظل نتحكم بأنفسنا ولا نلوّث الواجهة الأصلية.
+  // Why a Shadow DOM? Pinterest loads global CSS that hits every element on the page.
+  // Inside the shadow we stay in control and never pollute the original interface.
 
   const UI_CSS = `
-/* لا نستخدم all: initial هنا: سيقطع وراثة متغيّرات الثيم عبر حدود الظل. */
+/* No all: initial here: it would cut theme variable inheritance across the shadow boundary. */
 :host {
   font-family: var(--pa-font, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
   color: var(--pa-text, #111);
@@ -469,7 +469,7 @@ button {
   cursor: pointer;
 }
 
-/* ===== الطبقة المعتمة خلف اللوحة ===== */
+/* ===== Scrim behind the sheet ===== */
 .pa-scrim {
   position: fixed;
   inset: 0;
@@ -489,7 +489,7 @@ button {
   display: none;
 }
 
-/* ===== لوحة الإعدادات ===== */
+/* ===== Settings sheet ===== */
 .pa-sheet {
   position: fixed;
   inset-inline: 0;
@@ -589,7 +589,7 @@ button {
   font-variant-numeric: tabular-nums;
 }
 
-/* ===== مفتاح مقسّم بنمط iOS ===== */
+/* ===== iOS-style segmented control ===== */
 .pa-segmented {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -616,7 +616,7 @@ button {
   box-shadow: 0 1px 3px rgba(0, 0, 0, .16);
 }
 
-/* ===== عيّنات اللون ===== */
+/* ===== Color swatches ===== */
 .pa-swatches {
   display: flex;
   gap: 12px;
@@ -641,7 +641,7 @@ button {
   box-shadow: 0 0 0 2px var(--pa-surface, #fff), 0 0 0 4px var(--pa-swatch);
 }
 
-/* ===== شريط الاستدارة ===== */
+/* ===== Corner radius slider ===== */
 input[type="range"] {
   width: 100%;
   height: 28px;
@@ -682,7 +682,7 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 2px 6px rgba(0, 0, 0, .28);
 }
 
-/* ===== قائمة المفاتيح ===== */
+/* ===== Toggle list ===== */
 .pa-list {
   display: grid;
   gap: 2px;
@@ -705,7 +705,7 @@ input[type="range"]::-moz-range-thumb {
   background: color-mix(in srgb, var(--pa-text, #111) 5%, transparent);
 }
 
-/* مفتاح iOS */
+/* iOS-style toggle */
 .pa-row input[type="checkbox"] {
   appearance: none;
   flex: 0 0 auto;
@@ -745,7 +745,7 @@ input[type="range"]::-moz-range-thumb {
   outline-offset: 2px;
 }
 
-/* ===== التذييل ===== */
+/* ===== Footer ===== */
 .pa-sheet-foot {
   display: flex;
   align-items: center;
@@ -776,7 +776,7 @@ input[type="range"]::-moz-range-thumb {
   font-variant-numeric: tabular-nums;
 }
 
-/* ===== الزر العائم ===== */
+/* ===== Floating button ===== */
 .pa-fab {
   position: fixed;
   left: 20px;
@@ -809,7 +809,7 @@ input[type="range"]::-moz-range-thumb {
   height: 22px;
 }
 
-/* ===== الشريط السفلي العائم ===== */
+/* ===== Floating dock ===== */
 .pa-dock {
   position: fixed;
   left: 50%;
@@ -867,7 +867,7 @@ input[type="range"]::-moz-range-thumb {
   height: 22px;
 }
 
-/* على الشاشات الضيقة نرفع الزر العائم فوق الشريط */
+/* On narrow screens we lift the floating button above the dock */
 @media (max-width: 780px) {
   .pa-fab {
     bottom: calc(92px + env(safe-area-inset-bottom, 0px));
@@ -878,7 +878,7 @@ input[type="range"]::-moz-range-thumb {
   }
 }
 
-/* اللوحة تصبح Sheet سفلية على الجوال */
+/* The sheet becomes a bottom sheet on phones */
 @media (max-width: 560px) {
   .pa-sheet {
     top: auto;
@@ -908,89 +908,89 @@ input[type="range"]::-moz-range-thumb {
   const UI_MARKUP = `
 <div class="pa-scrim" data-pa-scrim hidden></div>
 
-<section class="pa-sheet" data-pa-sheet role="dialog" aria-modal="true" aria-labelledby="pa-sheet-title" dir="rtl" hidden>
+<section class="pa-sheet" data-pa-sheet role="dialog" aria-modal="true" aria-labelledby="pa-sheet-title" dir="ltr" hidden>
   <header class="pa-sheet-head">
     <img class="pa-logo" src="data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjQkQwODFDIiByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+UGludGVyZXN0PC90aXRsZT48cGF0aCBkPSJNMTIuMDE3IDBDNS4zOTYgMCAuMDI5IDUuMzY3LjAyOSAxMS45ODdjMCA1LjA3OSAzLjE1OCA5LjQxNyA3LjYxOCAxMS4xNjItLjEwNS0uOTQ5LS4xOTktMi40MDMuMDQxLTMuNDM5LjIxOS0uOTM3IDEuNDA2LTUuOTU3IDEuNDA2LTUuOTU3cy0uMzU5LS43Mi0uMzU5LTEuNzgxYzAtMS42NjMuOTY3LTIuOTExIDIuMTY4LTIuOTExIDEuMDI0IDAgMS41MTguNzY5IDEuNTE4IDEuNjg4IDAgMS4wMjktLjY1MyAyLjU2Ny0uOTkyIDMuOTkyLS4yODUgMS4xOTMuNiAyLjE2NSAxLjc3NSAyLjE2NSAyLjEyOCAwIDMuNzY4LTIuMjQ1IDMuNzY4LTUuNDg3IDAtMi44NjEtMi4wNjMtNC44NjktNS4wMDgtNC44NjktMy40MSAwLTUuNDA5IDIuNTYyLTUuNDA5IDUuMTk5IDAgMS4wMzMuMzk0IDIuMTQzLjg4OSAyLjc0MS4wOTkuMTIuMTEyLjIyNS4wODUuMzQ1LS4wOS4zNzUtLjI5MyAxLjE5OS0uMzM0IDEuMzYzLS4wNTMuMjI1LS4xNzIuMjcxLS40MDEuMTY1LTEuNDk1LS42OS0yLjQzMy0yLjg3OC0yLjQzMy00LjY0NiAwLTMuNzc2IDIuNzQ4LTcuMjUyIDcuOTItNy4yNTIgNC4xNTggMCA3LjM5MiAyLjk2NyA3LjM5MiA2LjkyMyAwIDQuMTM1LTIuNjA3IDcuNDYyLTYuMjMzIDcuNDYyLTEuMjE0IDAtMi4zNTQtLjYyOS0yLjc1OC0xLjM3OWwtLjc0OSAyLjg0OGMtLjI2OSAxLjA0NS0xLjAwNCAyLjM1Mi0xLjQ5OCAzLjE0NiAxLjEyMy4zNDUgMi4zMDYuNTM1IDMuNTUuNTM1IDYuNjA3IDAgMTEuOTg1LTUuMzY1IDExLjk4NS0xMS45ODdDMjMuOTcgNS4zOSAxOC41OTIuMDI2IDExLjk4NS4wMjZMMTIuMDE3IDB6Ii8+PC9zdmc+" alt="Pinterest" width="28" height="28">
-    <h2 id="pa-sheet-title">مظهر Pinterest</h2>
-    <button type="button" class="pa-icon-btn" data-pa-close aria-label="إغلاق الإعدادات">✕</button>
+    <h2 id="pa-sheet-title">Pinterest Look</h2>
+    <button type="button" class="pa-icon-btn" data-pa-close aria-label="Close settings">✕</button>
   </header>
 
   <div class="pa-sheet-body">
     <div class="pa-field">
-      <span class="pa-field-label">الوضع</span>
-      <div class="pa-segmented" role="radiogroup" aria-label="وضع الألوان">
-        <button type="button" role="radio" aria-checked="true" data-theme-option="system">تلقائي</button>
-        <button type="button" role="radio" aria-checked="false" data-theme-option="light">فاتح</button>
-        <button type="button" role="radio" aria-checked="false" data-theme-option="dark">داكن</button>
+      <span class="pa-field-label">Theme</span>
+      <div class="pa-segmented" role="radiogroup" aria-label="Color mode">
+        <button type="button" role="radio" aria-checked="true" data-theme-option="system">Auto</button>
+        <button type="button" role="radio" aria-checked="false" data-theme-option="light">Light</button>
+        <button type="button" role="radio" aria-checked="false" data-theme-option="dark">Dark</button>
         <button type="button" role="radio" aria-checked="false" data-theme-option="amoled">AMOLED</button>
       </div>
     </div>
 
     <div class="pa-field">
-      <span class="pa-field-label">لون التمييز</span>
-      <div class="pa-swatches" role="group" aria-label="لون التمييز">
-        <button type="button" class="pa-swatch" data-accent-option="pinterest" style="--pa-swatch:#e60023" aria-label="أحمر Pinterest" aria-pressed="true"></button>
-        <button type="button" class="pa-swatch" data-accent-option="ios" style="--pa-swatch:#0a84ff" aria-label="أزرق iOS" aria-pressed="false"></button>
-        <button type="button" class="pa-swatch" data-accent-option="violet" style="--pa-swatch:#8b5cf6" aria-label="بنفسجي" aria-pressed="false"></button>
-        <button type="button" class="pa-swatch" data-accent-option="emerald" style="--pa-swatch:#10b981" aria-label="أخضر" aria-pressed="false"></button>
-        <button type="button" class="pa-swatch" data-accent-option="amber" style="--pa-swatch:#f59e0b" aria-label="برتقالي" aria-pressed="false"></button>
+      <span class="pa-field-label">Accent color</span>
+      <div class="pa-swatches" role="group" aria-label="Accent color">
+        <button type="button" class="pa-swatch" data-accent-option="pinterest" style="--pa-swatch:#e60023" aria-label="Pinterest red" aria-pressed="true"></button>
+        <button type="button" class="pa-swatch" data-accent-option="ios" style="--pa-swatch:#0a84ff" aria-label="iOS blue" aria-pressed="false"></button>
+        <button type="button" class="pa-swatch" data-accent-option="violet" style="--pa-swatch:#8b5cf6" aria-label="Violet" aria-pressed="false"></button>
+        <button type="button" class="pa-swatch" data-accent-option="emerald" style="--pa-swatch:#10b981" aria-label="Green" aria-pressed="false"></button>
+        <button type="button" class="pa-swatch" data-accent-option="amber" style="--pa-swatch:#f59e0b" aria-label="Orange" aria-pressed="false"></button>
       </div>
     </div>
 
     <div class="pa-field">
-      <label class="pa-field-label" for="pa-radius-input">استدارة الحواف <output data-pa-radius-output>20</output></label>
+      <label class="pa-field-label" for="pa-radius-input">Corner radius <output data-pa-radius-output>20</output></label>
       <input id="pa-radius-input" type="range" min="8" max="28" step="1" value="20" data-pa-radius>
     </div>
 
     <div class="pa-list">
       <label class="pa-row">
-        <span>تعتيم الأسطح الفاتحة</span>
+        <span>Darken light surfaces</span>
         <input type="checkbox" data-pa-toggle="deepDark">
       </label>
       <label class="pa-row">
-        <span>إخفاء المنشورات المروّجة</span>
+        <span>Hide promoted pins</span>
         <input type="checkbox" data-pa-toggle="hidePromoted">
       </label>
       <label class="pa-row">
-        <span>إخفاء وحدات التسوق</span>
+        <span>Hide shopping modules</span>
         <input type="checkbox" data-pa-toggle="hideShopping">
       </label>
       <label class="pa-row">
-        <span>رأس صفحة مضغوط</span>
+        <span>Compact header</span>
         <input type="checkbox" data-pa-toggle="compactHeader">
       </label>
       <label class="pa-row">
-        <span>الشريط السفلي العائم</span>
+        <span>Floating dock</span>
         <input type="checkbox" data-pa-toggle="showDock">
       </label>
     </div>
   </div>
 
   <footer class="pa-sheet-foot">
-    <button type="button" class="pa-reset" data-pa-reset>استعادة الافتراضي</button>
-    <span class="pa-version">v1.1.0</span>
+    <button type="button" class="pa-reset" data-pa-reset>Reset to defaults</button>
+    <span class="pa-version">v${VERSION}</span>
   </footer>
 </section>
 
-<nav class="pa-dock" data-pa-dock aria-label="تنقل سريع">
-  <a href="/" data-pa-nav="home" aria-label="الرئيسية" title="الرئيسية">
+<nav class="pa-dock" data-pa-dock aria-label="Quick navigation">
+  <a href="/" data-pa-nav="home" aria-label="Home" title="Home">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10.6 12 4l8 6.6V19a1.4 1.4 0 0 1-1.4 1.4h-4.1v-6h-5v6H5.4A1.4 1.4 0 0 1 4 19z"/></svg>
   </a>
-  <a href="/ideas/" data-pa-nav="explore" aria-label="استكشاف" title="استكشاف">
+  <a href="/ideas/" data-pa-nav="explore" aria-label="Explore" title="Explore">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><path d="m14.9 9.1-1.7 4.1-4.1 1.7 1.7-4.1z"/></svg>
   </a>
-  <button type="button" data-pa-search aria-label="بحث" title="بحث">
+  <button type="button" data-pa-search aria-label="Search" title="Search">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.4"/><path d="m20 20-4.2-4.2"/></svg>
   </button>
-  <a href="/pin-creation-tool/" data-pa-nav="create" aria-label="إنشاء Pin" title="إنشاء Pin">
+  <a href="/pin-creation-tool/" data-pa-nav="create" aria-label="Create pin" title="Create pin">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5.5v13M5.5 12h13"/></svg>
   </a>
-  <button type="button" data-pa-settings aria-label="إعدادات المظهر" title="إعدادات المظهر">
+  <button type="button" data-pa-settings aria-label="Appearance settings" title="Appearance settings">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h8M16.5 8H20M4 16h4M12.5 16H20"/><circle cx="14" cy="8" r="2.1"/><circle cx="10" cy="16" r="2.1"/></svg>
   </button>
 </nav>
 
-<button type="button" class="pa-fab" data-pa-fab aria-label="إعدادات المظهر" title="إعدادات المظهر">
+<button type="button" class="pa-fab" data-pa-fab aria-label="Appearance settings" title="Appearance settings">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h8M16.5 8H20M4 16h4M12.5 16H20"/><circle cx="14" cy="8" r="2.1"/><circle cx="10" cy="16" r="2.1"/></svg>
 </button>
 `;
@@ -1074,7 +1074,7 @@ input[type="range"]::-moz-range-thumb {
     document.addEventListener("click", () => window.setTimeout(syncDockActive, 400), true);
   }
 
-  /* ---------- 7. فتح وإغلاق اللوحة ---------- */
+  /* ---------- 7. Opening and closing the sheet ---------- */
 
   function openSheet() {
     if (!panel || panel.sheet.dataset.open === "1") return;
@@ -1083,7 +1083,7 @@ input[type="range"]::-moz-range-thumb {
     panel.scrim.hidden = false;
     panel.sheet.hidden = false;
 
-    // إطار واحد قبل تشغيل الانتقال حتى يلتقط المتصفح الحالة الابتدائية.
+    // One frame before the transition starts, so the browser captures the initial state.
     window.requestAnimationFrame(() => {
       panel.scrim.dataset.open = "1";
       panel.sheet.dataset.open = "1";
@@ -1106,7 +1106,7 @@ input[type="range"]::-moz-range-thumb {
     if (panel.lastFocus instanceof HTMLElement) panel.lastFocus.focus();
   }
 
-  /* ---------- 8. مزامنة الواجهة مع الإعدادات ---------- */
+  /* ---------- 8. Syncing the UI with the settings ---------- */
 
   function syncPanel() {
     if (!panel) return;
@@ -1159,7 +1159,7 @@ input[type="range"]::-moz-range-thumb {
     window.location.href = "/search/";
   }
 
-  /* ---------- 9. التشغيل ---------- */
+  /* ---------- 9. Boot ---------- */
 
   let started = false;
 
@@ -1173,7 +1173,7 @@ input[type="range"]::-moz-range-thumb {
     observePage();
 
     if (typeof GM_registerMenuCommand === "function") {
-      GM_registerMenuCommand("إعدادات مظهر Pinterest", openSheet);
+      GM_registerMenuCommand("Pinterest appearance settings", openSheet);
     }
 
     systemDark.addEventListener("change", () => {
@@ -1190,7 +1190,7 @@ input[type="range"]::-moz-range-thumb {
     observer.observe(document.documentElement, { childList: true, subtree: true });
   }
 
-  // حقن الـ CSS والثيم فورًا (document-start) حتى لا تومض الصفحة بيضاء قبل بناء الواجهة.
+  // Inject the CSS and theme immediately (document-start) so the page never flashes white before the UI is built.
   injectPageStyle();
   applySettings(settings, { persist: false });
 

@@ -1,66 +1,66 @@
 # Pinterest App Look
 
-سكربت مستخدم (userscript) يعيد تصميم Pinterest على الويب بلغة تصميم تطبيق الآيفون:
-وضع مظلم، بطاقات دائرية، هيدر زجاجي، شريط تنقل عائم، ولوحة إعدادات بنمط iOS.
+A userscript that redesigns Pinterest on the web with the iPhone app design language:
+dark mode, rounded cards, a glass header, a floating tab bar, and an iOS-style settings sheet.
 
-| الملف | الوظيفة |
+| File | Purpose |
 | --- | --- |
-| `pinterest-app-look.user.js` | السكربت نفسه (هذا ما تركّبه). |
-| `pinterest-logo.svg` | شعار Pinterest المستخدم في رأس لوحة الإعدادات وفي مدير السكربتات. |
-| `LICENSE` | رخصة MIT. |
+| `pinterest-app-look.user.js` | The userscript itself (this is what you install). |
+| `pinterest-logo.svg` | The Pinterest logo, used in the settings sheet header and in the userscript manager. |
+| `LICENSE` | The MIT license. |
 
-## التركيب
+## Installation
 
-1. ثبّت مدير سكربتات: [Violentmonkey](https://violentmonkey.github.io/get-it/) (مُفضّل) أو Tampermonkey.
-2. افتح لوحة المدير ← «إنشاء سكربت جديد» ← الصق محتوى `pinterest-app-look.user.js` ← احفظ.
-   (أو اسحب الملف إلى نافذة المتصفح إذا كان المدير يدعم ذلك.)
-3. افتح `pinterest.com` وحدّث الصفحة.
-4. ستجد زر الترس العائم أسفل يسار الشاشة، وأيقونة الإعدادات في الشريط السفلي.
+1. Install a userscript manager: [Violentmonkey](https://violentmonkey.github.io/get-it/) (preferred) or Tampermonkey.
+2. Open the manager panel → "Create a new script" → paste the contents of `pinterest-app-look.user.js` → save.
+   (Or drag the file into a browser window if your manager supports it.)
+3. Open `pinterest.com` and reload the page.
+4. You will find the floating gear button at the bottom left, and the settings icon in the bottom bar.
 
-## الميزات
+## Features
 
-- **وضع مظلم بثلاث صيغ:** تلقائي (يتبع النظام)، داكن، وAMOLED (أسود كامل).
-- **إعادة تصميم:** زوايا دائرية على البطاقات والأزرار والحقول، ظل ناعم عند المرور، هيدر شبه شفاف بضباب خلفي، شريط تمرير رفيع، وتحديد نص بلون التمييز.
-- **شريط تنقل عائم** بنمط التطبيقات: الرئيسية، استكشاف، بحث، إنشاء، إعدادات.
-- **تعتيم الأسطح الفاتحة:** Pinterest يبني ألوانه بكلاسات مولّدة لا يمكن لأي CSS ثابت معرفتها، لذلك يقرأ السكربت اللون المحسوب للعناصر المهمة ويحوّل الأبيض منها إلى لون السطح. هذا ما يجعل الوضع المظلم يغطي النوافذ والقوائم لا الصفحة فقط.
-- **تنظيف اختياري:** إخفاء المنشورات المروّجة ووحدات التسوق.
-- **حفظ الإعدادات** في `localStorage` تحت المفتاح `pinterest-app-look.settings.v1`.
-- **زر في قائمة مدير السكربتات** لفتح الإعدادات.
+- **Three dark mode variants:** Auto (follows the system), Dark, and AMOLED (pure black).
+- **Full restyle:** rounded corners on cards, buttons and fields, a soft shadow on hover, a translucent header with a backdrop blur, a thin scrollbar, and text selection in the accent color.
+- **Floating tab bar** in the app style: Home, Explore, Search, Create, Settings.
+- **Darkening light surfaces:** Pinterest builds its colors with generated classes that no static CSS can know, so the script reads the computed color of important elements and turns the white ones into the surface color. This is what makes dark mode cover dialogs and menus, not just the page.
+- **Optional clean-up:** hiding promoted pins and shopping modules.
+- **Settings are saved** in `localStorage` under the key `pinterest-app-look.settings.v1`.
+- **A button in the userscript manager menu** to open the settings.
 
-## الإعدادات
+## Settings
 
-| الإعداد | الأثر |
+| Setting | Effect |
 | --- | --- |
-| الوضع | فاتح / داكن / AMOLED / تلقائي. |
-| لون التمييز | أحمر Pinterest، أزرق iOS، بنفسجي، أخضر، برتقالي. |
-| استدارة الحواف | من 8 إلى 28 بكسل، تُطبَّق على البطاقات والأزرار والنوافذ. |
-| تعتيم الأسطح الفاتحة | يفعّل/يعطّل تمريرة الجافاسكربت التي تلوّن الأسطح البيضاء. |
-| إخفاء المنشورات المروّجة | يخفي البطاقات التي تحمل وسم Promoted/Sponsored/ممول. |
-| إخفاء وحدات التسوق | يخفي وحدات المتجر والمنتجات. |
-| رأس صفحة مضغوط | يقلّل حشوة الهيدر. |
-| الشريط السفلي العائم | إظهار/إخفاء شريط التنقل. |
+| Theme | Light / Dark / AMOLED / Auto. |
+| Accent color | Pinterest red, iOS blue, violet, green, orange. |
+| Corner radius | From 8 to 28 pixels, applied to cards, buttons and dialogs. |
+| Darken light surfaces | Enables or disables the JavaScript pass that paints white surfaces. |
+| Hide promoted pins | Hides cards carrying a `Promoted` / `Sponsored` label (or `ممول` on the Arabic interface). |
+| Hide shopping modules | Hides store and product modules. |
+| Compact header | Reduces the header padding. |
+| Floating dock | Shows or hides the navigation bar. |
 
-## كيف يعمل (باختصار)
+## How it works (short version)
 
-1. عند `document-start` تُحقن ورقة أنماط واحدة وتُضبط سمات الثيم على `<html>` قبل أول رسم، حتى لا تومض الصفحة بيضاء.
-2. التصميم كله عبر متغيّرات CSS (`--pa-bg`, `--pa-surface`, `--pa-r`, `--pa-accent`)، فتغيير الثيم لا يعيد بناء أي شيء — مجرد تبديل سمات.
-3. الواجهة (اللوحة + الشريط + الزر) داخل **Shadow DOM**، فلا تتأثر بـ CSS الخاص بـ Pinterest ولا تلوّثه.
-4. `MutationObserver` يلتقط المحتوى الجديد أثناء التمرير ويجدول تمريرة تلوين مؤجّلة (‏`requestIdleCallback`)، مع تذكّر كل عنصر فُحص حتى لا يُقاس مرتين.
+1. At `document-start` a single stylesheet is injected and the theme attributes are set on `<html>` before the first paint, so the page never flashes white.
+2. The whole design runs on CSS variables (`--pa-bg`, `--pa-surface`, `--pa-r`, `--pa-accent`), so changing the theme rebuilds nothing — it is only a set of attribute swaps.
+3. The interface (the sheet, the dock and the button) lives in a **Shadow DOM**, so Pinterest's own CSS cannot affect it and it does not pollute the page.
+4. A `MutationObserver` catches new content while you scroll and schedules a deferred painting pass (`requestIdleCallback`), remembering every element it has already inspected so nothing is measured twice.
 
-## حدود معروفة
+## Known limits
 
-- **لم أستطع اختبار السكربت على Pinterest الحقيقي من هنا** (جلستك في المتصفح لا تسمح بالتحكم بالصفحة). مطابقة المحدّدات (`data-test-id`) مبنية على الوسوم الشائعة في Pinterest وقد تحتاج تعديلًا إذا غيّروا البنية.
-- إذا لم يظهر الوضع المظلم في نافذة معيّنة، فالسبب غالبًا أن Pinterest يرسم خلفيتها بـ `background` وليس `background-color`، أو داخل `iframe` (السكربت لا يعمل داخل الإطارات).
-- إخفاء المروّج يعتمد على وجود وسم `Promoted`/`Sponsored`/`ممول` في العنصر. المنشورات التي لا تحمل وسمًا لن تُخفى — استخدم uBlock Origin للحالات المتبقية.
-- `body` يأخذ حشوة سفلية 96px عند تفعيل الشريط العائم حتى لا يغطي آخر صف من البطاقات.
+- **I could not test the script on the real Pinterest from here** (this browser session cannot drive the page). The `data-test-id` selectors are based on Pinterest's common markup and may need adjusting if the site changes its structure.
+- If dark mode does not show up in a particular window, the reason is usually that Pinterest paints its background with `background` rather than `background-color`, or that the content sits inside an `iframe` (the script does not run inside frames).
+- Hiding promoted pins depends on the element carrying a `Promoted` / `Sponsored` label (or `ممول` on the Arabic interface). Pins without such a label will not be hidden — use uBlock Origin for the remaining cases.
+- `body` gets 96px of bottom padding while the floating bar is enabled, so it does not cover the last row of cards.
 
-## تخصيص سريع
+## Quick customization
 
-- **الألوان:** عدّل متغيّرات `:root` و`html[data-pa-theme="dark"]` في أعلى `PAGE_CSS`.
-- **ألوان التمييز:** أضف مفتاحًا في `ACCENTS` ثم زرًّا في `UI_MARKUP` بنفس `data-accent-option`.
-- **المحدّدات:** كل ما يخص Pinterest موجود داخل `PAGE_CSS` مقسّمًا إلى أقسام مرقّمة (الهيدر، البطاقات، الأزرار، النوافذ…). ابدأ من هناك عند أي تغيير في الموقع.
-- **نصف القطر الافتراضي:** غيّر `radius` في `DEFAULTS`.
+- **Colors:** edit the `:root` and `html[data-pa-theme="dark"]` variables at the top of `PAGE_CSS`.
+- **Accent colors:** add a key to `ACCENTS`, then add a button in `UI_MARKUP` with the matching `data-accent-option`.
+- **Selectors:** everything Pinterest-specific lives inside `PAGE_CSS`, split into numbered sections (header, cards, buttons, dialogs…). Start there whenever the site changes.
+- **Default radius:** change `radius` in `DEFAULTS`.
 
-## الترخيص
+## License
 
-MIT — النص الكامل في [`LICENSE`](LICENSE).
+MIT — the full text is in [`LICENSE`](LICENSE).
