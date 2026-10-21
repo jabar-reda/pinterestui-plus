@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Pinterest App Look
-// @namespace    https://github.com/jabar/pinterest-app-look
-// @version      1.2.0
-// @description  iOS-style Pinterest: dark mode, rounded cards, glass header, floating dock and a settings sheet.
+// @name         PinterestUI+
+// @namespace    https://github.com/jabar/pinterestui-plus
+// @version      1.3.0
+// @description  PinterestUI+ gives Pinterest on the web the iPhone app look: dark mode, rounded cards, glass header, floating dock and a settings sheet.
 // @author       Jabar
 // @license      MIT
 // @icon         data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjQkQwODFDIiByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+UGludGVyZXN0PC90aXRsZT48cGF0aCBkPSJNMTIuMDE3IDBDNS4zOTYgMCAuMDI5IDUuMzY3LjAyOSAxMS45ODdjMCA1LjA3OSAzLjE1OCA5LjQxNyA3LjYxOCAxMS4xNjItLjEwNS0uOTQ5LS4xOTktMi40MDMuMDQxLTMuNDM5LjIxOS0uOTM3IDEuNDA2LTUuOTU3IDEuNDA2LTUuOTU3cy0uMzU5LS43Mi0uMzU5LTEuNzgxYzAtMS42NjMuOTY3LTIuOTExIDIuMTY4LTIuOTExIDEuMDI0IDAgMS41MTguNzY5IDEuNTE4IDEuNjg4IDAgMS4wMjktLjY1MyAyLjU2Ny0uOTkyIDMuOTkyLS4yODUgMS4xOTMuNiAyLjE2NSAxLjc3NSAyLjE2NSAyLjEyOCAwIDMuNzY4LTIuMjQ1IDMuNzY4LTUuNDg3IDAtMi44NjEtMi4wNjMtNC44NjktNS4wMDgtNC44NjktMy40MSAwLTUuNDA5IDIuNTYyLTUuNDA5IDUuMTk5IDAgMS4wMzMuMzk0IDIuMTQzLjg4OSAyLjc0MS4wOTkuMTIuMTEyLjIyNS4wODUuMzQ1LS4wOS4zNzUtLjI5MyAxLjE5OS0uMzM0IDEuMzYzLS4wNTMuMjI1LS4xNzIuMjcxLS40MDEuMTY1LTEuNDk1LS42OS0yLjQzMy0yLjg3OC0yLjQzMy00LjY0NiAwLTMuNzc2IDIuNzQ4LTcuMjUyIDcuOTItNy4yNTIgNC4xNTggMCA3LjM5MiAyLjk2NyA3LjM5MiA2LjkyMyAwIDQuMTM1LTIuNjA3IDcuNDYyLTYuMjMzIDcuNDYyLTEuMjE0IDAtMi4zNTQtLjYyOS0yLjc1OC0xLjM3OWwtLjc0OSAyLjg0OGMtLjI2OSAxLjA0NS0xLjAwNCAyLjM1Mi0xLjQ5OCAzLjE0NiAxLjEyMy4zNDUgMi4zMDYuNTM1IDMuNTUuNTM1IDYuNjA3IDAgMTEuOTg1LTUuMzY1IDExLjk4NS0xMS45ODdDMjMuOTcgNS4zOSAxOC41OTIuMDI2IDExLjk4NS4wMjZMMTIuMDE3IDB6Ii8+PC9zdmc+
@@ -33,8 +33,8 @@
 // ==/UserScript==
 
 /*
-  Pinterest App Look — v1.2.0
-  ---------------------------
+  PinterestUI+ — v1.3.0
+  ---------------------
   The idea: Pinterest on the web uses flat colors, sharp corners and tight spacing.
   This script replaces that visual layer with the iOS design language:
   frosted glass, rounded corners, soft shadows, short motion and a floating tab bar.
@@ -52,10 +52,12 @@
 
   /* ---------- 1. Settings ---------- */
 
+  // The storage key keeps the original project name on purpose: changing it would
+  // wipe the settings of everyone who already installed the script.
   const STORAGE_KEY = "pinterest-app-look.settings.v1";
   const STYLE_ID = "pa-page-style";
   const HOST_ID = "pa-ui-host";
-  const VERSION = "1.2.0";
+  const VERSION = "1.3.0";
 
   const ACCENTS = {
     pinterest: "#e60023",
@@ -911,7 +913,7 @@ input[type="range"]::-moz-range-thumb {
 <section class="pa-sheet" data-pa-sheet role="dialog" aria-modal="true" aria-labelledby="pa-sheet-title" dir="ltr" hidden>
   <header class="pa-sheet-head">
     <img class="pa-logo" src="data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjQkQwODFDIiByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+UGludGVyZXN0PC90aXRsZT48cGF0aCBkPSJNMTIuMDE3IDBDNS4zOTYgMCAuMDI5IDUuMzY3LjAyOSAxMS45ODdjMCA1LjA3OSAzLjE1OCA5LjQxNyA3LjYxOCAxMS4xNjItLjEwNS0uOTQ5LS4xOTktMi40MDMuMDQxLTMuNDM5LjIxOS0uOTM3IDEuNDA2LTUuOTU3IDEuNDA2LTUuOTU3cy0uMzU5LS43Mi0uMzU5LTEuNzgxYzAtMS42NjMuOTY3LTIuOTExIDIuMTY4LTIuOTExIDEuMDI0IDAgMS41MTguNzY5IDEuNTE4IDEuNjg4IDAgMS4wMjktLjY1MyAyLjU2Ny0uOTkyIDMuOTkyLS4yODUgMS4xOTMuNiAyLjE2NSAxLjc3NSAyLjE2NSAyLjEyOCAwIDMuNzY4LTIuMjQ1IDMuNzY4LTUuNDg3IDAtMi44NjEtMi4wNjMtNC44NjktNS4wMDgtNC44NjktMy40MSAwLTUuNDA5IDIuNTYyLTUuNDA5IDUuMTk5IDAgMS4wMzMuMzk0IDIuMTQzLjg4OSAyLjc0MS4wOTkuMTIuMTEyLjIyNS4wODUuMzQ1LS4wOS4zNzUtLjI5MyAxLjE5OS0uMzM0IDEuMzYzLS4wNTMuMjI1LS4xNzIuMjcxLS40MDEuMTY1LTEuNDk1LS42OS0yLjQzMy0yLjg3OC0yLjQzMy00LjY0NiAwLTMuNzc2IDIuNzQ4LTcuMjUyIDcuOTItNy4yNTIgNC4xNTggMCA3LjM5MiAyLjk2NyA3LjM5MiA2LjkyMyAwIDQuMTM1LTIuNjA3IDcuNDYyLTYuMjMzIDcuNDYyLTEuMjE0IDAtMi4zNTQtLjYyOS0yLjc1OC0xLjM3OWwtLjc0OSAyLjg0OGMtLjI2OSAxLjA0NS0xLjAwNCAyLjM1Mi0xLjQ5OCAzLjE0NiAxLjEyMy4zNDUgMi4zMDYuNTM1IDMuNTUuNTM1IDYuNjA3IDAgMTEuOTg1LTUuMzY1IDExLjk4NS0xMS45ODdDMjMuOTcgNS4zOSAxOC41OTIuMDI2IDExLjk4NS4wMjZMMTIuMDE3IDB6Ii8+PC9zdmc+" alt="Pinterest" width="28" height="28">
-    <h2 id="pa-sheet-title">Pinterest Look</h2>
+    <h2 id="pa-sheet-title">PinterestUI+</h2>
     <button type="button" class="pa-icon-btn" data-pa-close aria-label="Close settings">✕</button>
   </header>
 
@@ -1173,7 +1175,7 @@ input[type="range"]::-moz-range-thumb {
     observePage();
 
     if (typeof GM_registerMenuCommand === "function") {
-      GM_registerMenuCommand("Pinterest appearance settings", openSheet);
+      GM_registerMenuCommand("PinterestUI+ settings", openSheet);
     }
 
     systemDark.addEventListener("change", () => {

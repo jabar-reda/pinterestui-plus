@@ -1,18 +1,18 @@
-# Pinterest App Look
+# PinterestUI+
 
-A userscript that redesigns Pinterest on the web with the iPhone app design language:
+**PinterestUI+** is a userscript that redesigns Pinterest on the web with the iPhone app design language:
 dark mode, rounded cards, a glass header, a floating tab bar, and an iOS-style settings sheet.
 
 | File | Purpose |
 | --- | --- |
-| `pinterest-app-look.user.js` | The userscript itself (this is what you install). |
+| `pinterestui-plus.user.js` | The userscript itself (this is what you install). |
 | `pinterest-logo.svg` | The Pinterest logo, used in the settings sheet header and in the userscript manager. |
 | `LICENSE` | The MIT license. |
 
 ## Installation
 
 1. Install a userscript manager: [Violentmonkey](https://violentmonkey.github.io/get-it/) (preferred) or Tampermonkey.
-2. Open the manager panel → "Create a new script" → paste the contents of `pinterest-app-look.user.js` → save.
+2. Open the manager panel → "Create a new script" → paste the contents of `pinterestui-plus.user.js` → save.
    (Or drag the file into a browser window if your manager supports it.)
 3. Open `pinterest.com` and reload the page.
 4. You will find the floating gear button at the bottom left, and the settings icon in the bottom bar.
@@ -24,7 +24,7 @@ dark mode, rounded cards, a glass header, a floating tab bar, and an iOS-style s
 - **Floating tab bar** in the app style: Home, Explore, Search, Create, Settings.
 - **Darkening light surfaces:** Pinterest builds its colors with generated classes that no static CSS can know, so the script reads the computed color of important elements and turns the white ones into the surface color. This is what makes dark mode cover dialogs and menus, not just the page.
 - **Optional clean-up:** hiding promoted pins and shopping modules.
-- **Settings are saved** in `localStorage` under the key `pinterest-app-look.settings.v1`.
+- **Settings are saved** in `localStorage` under the key `pinterest-app-look.settings.v1`. The key keeps the original project name on purpose, so renaming the project never wipes the settings of existing installs.
 - **A button in the userscript manager menu** to open the settings.
 
 ## Settings
