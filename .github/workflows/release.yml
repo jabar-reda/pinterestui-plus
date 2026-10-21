@@ -58,10 +58,14 @@ jobs:
           files: pinterestui-plus.user.js
           generate_release_notes: true
           body: |
-            Install `pinterestui-plus.user.js` from the assets below, or install it
-            straight from the raw URL:
+            ## Install
 
-            https://raw.githubusercontent.com/jabar-reda/pinterestui-plus/main/pinterestui-plus.user.js
+            One click, straight from Greasy Fork:
 
-            The script declares `@updateURL` and `@downloadURL`, so your userscript
-            manager checks for new versions on its own.
+            https://greasyfork.org/en/scripts/601440-pinterestui
+
+            Or grab `pinterestui-plus.user.js` from the assets below and open it in
+            your browser.
+
+            The script declares `@updateURL` and `@downloadURL` pointing at Greasy Fork,
+            so your userscript manager checks for new versions on its own.

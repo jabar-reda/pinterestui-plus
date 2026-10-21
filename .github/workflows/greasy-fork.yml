@@ -43,8 +43,40 @@ jobs:
           echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
           echo "CHANGELOG_EOF" >> "$GITHUB_OUTPUT"
 
-      - name: Send the update to Greasy Fork
+      # A push that only touches the README must not turn the CI red, and it must not
+      # hit the Greasy Fork API either. So we compare the version in the script with
+      # the version Greasy Fork already serves and only publish when they differ.
+      - name: Compare with the version Greasy Fork already serves
+        id: published
         if: steps.config.outputs.skip == 'false'
+        env:
+          GF_SCRIPT_ID: ${{ vars.GF_SCRIPT_ID }}
+          VERSION: ${{ steps.script.outputs.version }}
+        run: |
+          PUBLISHED=$(curl --silent --fail "https://api.greasyfork.org/scripts/${GF_SCRIPT_ID}.json" \
+            | grep --only-matching '"version":"[^"]*"' | head -1 | cut -d '"' -f 4 || true)
+
+          if [ -z "$PUBLISHED" ]; then
+            echo "state=unknown" >> "$GITHUB_OUTPUT"
+            echo "::notice::Could not read the published version, publishing anyway."
+          elif [ "$PUBLISHED" = "$VERSION" ]; then
+            echo "state=current" >> "$GITHUB_OUTPUT"
+            echo "::notice::Greasy Fork already serves ${PUBLISHED}, nothing to publish."
+          elif [ "$(printf '%s\n%s\n' "$PUBLISHED" "$VERSION" | sort -V | tail -1)" = "$PUBLISHED" ]; then
+            # Greasy Fork already has a newer version: a force-pushed older commit must
+            # never downgrade what users are downloading.
+            echo "state=ahead" >> "$GITHUB_OUTPUT"
+            echo "::warning::Greasy Fork serves ${PUBLISHED}, which is newer than ${VERSION}. Not downgrading."
+          else
+            echo "state=behind" >> "$GITHUB_OUTPUT"
+            echo "::notice::Greasy Fork serves ${PUBLISHED}, publishing ${VERSION}."
+          fi
+
+      - name: Send the update to Greasy Fork
+        if: >-
+          steps.config.outputs.skip == 'false' &&
+          steps.published.outputs.state != 'current' &&
+          steps.published.outputs.state != 'ahead'
         env:
           GF_TOKEN: ${{ secrets.GF_TOKEN }}
           GF_SCRIPT_ID: ${{ vars.GF_SCRIPT_ID }}
@@ -52,11 +84,22 @@ jobs:
           DESCRIPTION: ${{ steps.script.outputs.description }}
           CHANGELOG: ${{ steps.script.outputs.changelog }}
         run: |
-          curl --fail --silent --show-error \
+          FILE_URL="https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/pinterestui-plus.user.js"
+          RESPONSE=$(mktemp)
+
+          HTTP_CODE=$(curl --silent --show-error --output "$RESPONSE" --write-out "%{http_code}" \
             -X POST "https://update.greasyfork.org/scripts/${GF_SCRIPT_ID}/code.user.js" \
             -H "Authorization: Bearer ${GF_TOKEN}" \
             --data-urlencode "version=${VERSION}" \
             --data-urlencode "description=${DESCRIPTION}" \
-            --data-urlencode "file_url=https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/pinterestui-plus.user.js" \
-            --data-urlencode "changelog=${CHANGELOG}"
-          echo "::notice::Published version ${VERSION} to Greasy Fork."
+            --data-urlencode "file_url=${FILE_URL}" \
+            --data-urlencode "changelog=${CHANGELOG}")
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "::notice::Published version ${VERSION} to Greasy Fork."
+            cat "$RESPONSE"
+          else
+            echo "::error::Greasy Fork rejected the update (HTTP ${HTTP_CODE})."
+            cat "$RESPONSE"
+            exit 1
+          fi
