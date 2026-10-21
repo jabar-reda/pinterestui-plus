@@ -5,6 +5,8 @@
 [![Issues](https://img.shields.io/github/issues/jabar-reda/pinterestui-plus?style=flat-square)](https://github.com/jabar-reda/pinterestui-plus/issues)
 [![License](https://img.shields.io/github/license/jabar-reda/pinterestui-plus?style=flat-square)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/jabar-reda/pinterestui-plus?style=flat-square)](https://github.com/jabar-reda/pinterestui-plus/releases/latest)
+[![Greasy Fork](https://img.shields.io/greasyfork/installcount/601440?style=flat-square)](https://greasyfork.org/en/scripts/601440-pinterestui)
+[![Greasy Fork daily](https://img.shields.io/greasyfork/daily/601440?style=flat-square)](https://greasyfork.org/en/scripts/601440-pinterestui)
 
 **PinterestUI+** is a userscript that redesigns Pinterest on the web with the iPhone app design language:
 dark mode, rounded cards, a glass header, a floating tab bar, and an iOS-style settings sheet.
@@ -19,9 +21,9 @@ dark mode, rounded cards, a glass header, a floating tab bar, and an iOS-style s
 
 **One click (recommended):**
 
-<a href="https://raw.githubusercontent.com/jabar-reda/pinterestui-plus/main/pinterestui-plus.user.js"><img src="https://img.shields.io/badge/-Install%20PinterestUI%2B-e60023?style=flat-square" alt="Install PinterestUI+"></a>
+<a href="https://update.greasyfork.org/scripts/601440/PinterestUI%2B.user.js"><img src="https://img.shields.io/badge/-Install%20PinterestUI%2B-e60023?style=flat-square" alt="Install PinterestUI+"></a>
 
-Or grab `pinterestui-plus.user.js` from the [latest release](https://github.com/jabar-reda/pinterestui-plus/releases/latest) and open it in your browser.
+Also available on [Greasy Fork](https://greasyfork.org/en/scripts/601440-pinterestui) and as `pinterestui-plus.user.js` from the [latest GitHub release](https://github.com/jabar-reda/pinterestui-plus/releases/latest).
 
 **Manually:**
 
@@ -31,7 +33,7 @@ Or grab `pinterestui-plus.user.js` from the [latest release](https://github.com/
 3. Open `pinterest.com` and reload the page.
 4. You will find the floating gear button at the bottom left, and the settings icon in the bottom bar.
 
-The script declares `@updateURL` and `@downloadURL`, so your userscript manager checks for new versions on its own.
+The script declares `@updateURL` and `@downloadURL` pointing at Greasy Fork, so your userscript manager checks for new versions on its own.
 
 ## Features
 
@@ -76,6 +78,19 @@ The script declares `@updateURL` and `@downloadURL`, so your userscript manager 
 - **Accent colors:** add a key to `ACCENTS`, then add a button in `UI_MARKUP` with the matching `data-accent-option`.
 - **Selectors:** everything Pinterest-specific lives inside `PAGE_CSS`, split into numbered sections (header, cards, buttons, dialogs…). Start there whenever the site changes.
 - **Default radius:** change `radius` in `DEFAULTS`.
+
+## Release process
+
+The two workflows in `.github/workflows/` handle the publishing:
+
+- **`release.yml`** — push a tag like `v1.4.0` and it creates the GitHub release with the script attached. The job fails early if the tag does not match the `@version` in the script, so the two can never drift apart.
+- **`greasy-fork.yml`** — every push to `main` publishes the new version to Greasy Fork, so users on the one-click install receive updates without doing anything. It needs two repository settings: the secret `GF_TOKEN` (a Greasy Fork token with the `script write` scope) and the variable `GF_SCRIPT_ID` (`601440`). The job skips itself when they are missing.
+
+To release a new version:
+
+1. Bump `@version` and the `VERSION` constant in `pinterestui-plus.user.js`.
+2. Commit and push to `main` — the Greasy Fork sync publishes it.
+3. Tag the same commit (`git tag v1.4.0 && git push origin v1.4.0`) — the release workflow creates the GitHub release.
 
 ## License
 

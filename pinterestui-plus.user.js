@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PinterestUI+
 // @namespace    https://github.com/jabar/pinterestui-plus
-// @version      1.3.0
+// @version      1.4.0
 // @description  PinterestUI+ gives Pinterest on the web the iPhone app look: dark mode, rounded cards, glass header, floating dock and a settings sheet.
 // @author       Jabar
 // @license      MIT
@@ -30,12 +30,12 @@
 // @grant        GM_registerMenuCommand
 // @run-at       document-start
 // @noframes
-// @updateURL    https://raw.githubusercontent.com/jabar-reda/pinterestui-plus/main/pinterestui-plus.user.js
-// @downloadURL  https://raw.githubusercontent.com/jabar-reda/pinterestui-plus/main/pinterestui-plus.user.js
+// @updateURL    https://update.greasyfork.org/scripts/601440/PinterestUI%2B.meta.js
+// @downloadURL  https://update.greasyfork.org/scripts/601440/PinterestUI%2B.user.js
 // ==/UserScript==
 
 /*
-  PinterestUI+ — v1.3.0
+  PinterestUI+ — v1.4.0
   ---------------------
   The idea: Pinterest on the web uses flat colors, sharp corners and tight spacing.
   This script replaces that visual layer with the iOS design language:
@@ -59,7 +59,7 @@
   const STORAGE_KEY = "pinterest-app-look.settings.v1";
   const STYLE_ID = "pa-page-style";
   const HOST_ID = "pa-ui-host";
-  const VERSION = "1.3.0";
+  const VERSION = "1.4.0";
 
   const ACCENTS = {
     pinterest: "#e60023",
