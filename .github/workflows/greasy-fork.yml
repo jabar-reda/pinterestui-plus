@@ -1,0 +1,62 @@
+name: Sync to Greasy Fork
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    name: Publish the update on Greasy Fork
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Check whether Greasy Fork is configured
+        id: config
+        env:
+          GF_TOKEN: ${{ secrets.GF_TOKEN }}
+        run: |
+          if [ -z "${{ vars.GF_SCRIPT_ID }}" ] || [ -z "$GF_TOKEN" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Greasy Fork is not configured yet (GF_SCRIPT_ID / GF_TOKEN), skipping."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Read the version and the changelog
+        id: script
+        if: steps.config.outputs.skip == 'false'
+        run: |
+          FILE="pinterestui-plus.user.js"
+          VERSION=$(sed -n 's|^// @version[[:space:]]*||p' "$FILE" | head -1 | tr -d '\r')
+          DESCRIPTION=$(sed -n 's|^// @description[[:space:]]*||p' "$FILE" | head -1 | tr -d '\r')
+          CHANGELOG=$(git log -1 --pretty=%B)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "description=$DESCRIPTION" >> "$GITHUB_OUTPUT"
+          echo "changelog<<CHANGELOG_EOF" >> "$GITHUB_OUTPUT"
+          echo "$CHANGELOG" >> "$GITHUB_OUTPUT"
+          echo "CHANGELOG_EOF" >> "$GITHUB_OUTPUT"
+
+      - name: Send the update to Greasy Fork
+        if: steps.config.outputs.skip == 'false'
+        env:
+          GF_TOKEN: ${{ secrets.GF_TOKEN }}
+          GF_SCRIPT_ID: ${{ vars.GF_SCRIPT_ID }}
+          VERSION: ${{ steps.script.outputs.version }}
+          DESCRIPTION: ${{ steps.script.outputs.description }}
+          CHANGELOG: ${{ steps.script.outputs.changelog }}
+        run: |
+          curl --fail --silent --show-error \
+            -X POST "https://update.greasyfork.org/scripts/${GF_SCRIPT_ID}/code.user.js" \
+            -H "Authorization: Bearer ${GF_TOKEN}" \
+            --data-urlencode "version=${VERSION}" \
+            --data-urlencode "description=${DESCRIPTION}" \
+            --data-urlencode "file_url=https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/pinterestui-plus.user.js" \
+            --data-urlencode "changelog=${CHANGELOG}"
+          echo "::notice::Published version ${VERSION} to Greasy Fork."

@@ -1,5 +1,11 @@
 # PinterestUI+
 
+[![Stars](https://img.shields.io/github/stars/jabar-reda/pinterestui-plus?style=flat-square)](https://github.com/jabar-reda/pinterestui-plus/stargazers)
+[![Forks](https://img.shields.io/github/forks/jabar-reda/pinterestui-plus?style=flat-square)](https://github.com/jabar-reda/pinterestui-plus/network/members)
+[![Issues](https://img.shields.io/github/issues/jabar-reda/pinterestui-plus?style=flat-square)](https://github.com/jabar-reda/pinterestui-plus/issues)
+[![License](https://img.shields.io/github/license/jabar-reda/pinterestui-plus?style=flat-square)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/jabar-reda/pinterestui-plus?style=flat-square)](https://github.com/jabar-reda/pinterestui-plus/releases/latest)
+
 **PinterestUI+** is a userscript that redesigns Pinterest on the web with the iPhone app design language:
 dark mode, rounded cards, a glass header, a floating tab bar, and an iOS-style settings sheet.
 
@@ -11,11 +17,21 @@ dark mode, rounded cards, a glass header, a floating tab bar, and an iOS-style s
 
 ## Installation
 
+**One click (recommended):**
+
+<a href="https://raw.githubusercontent.com/jabar-reda/pinterestui-plus/main/pinterestui-plus.user.js"><img src="https://img.shields.io/badge/-Install%20PinterestUI%2B-e60023?style=flat-square" alt="Install PinterestUI+"></a>
+
+Or grab `pinterestui-plus.user.js` from the [latest release](https://github.com/jabar-reda/pinterestui-plus/releases/latest) and open it in your browser.
+
+**Manually:**
+
 1. Install a userscript manager: [Violentmonkey](https://violentmonkey.github.io/get-it/) (preferred) or Tampermonkey.
 2. Open the manager panel → "Create a new script" → paste the contents of `pinterestui-plus.user.js` → save.
    (Or drag the file into a browser window if your manager supports it.)
 3. Open `pinterest.com` and reload the page.
 4. You will find the floating gear button at the bottom left, and the settings icon in the bottom bar.
+
+The script declares `@updateURL` and `@downloadURL`, so your userscript manager checks for new versions on its own.
 
 ## Features
 

@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (defaults to the @version in the script)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish the GitHub release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Read the version from the script
+        id: script
+        run: |
+          FILE="pinterestui-plus.user.js"
+          VERSION=$(sed -n 's|^// @version[[:space:]]*||p' "$FILE" | head -1 | tr -d '\r')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Script version: $VERSION"
+
+      - name: Resolve the release tag
+        id: tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.version }}"
+            [ -z "$TAG" ] && TAG="v${{ steps.script.outputs.version }}"
+          else
+            TAG="${{ github.ref_name }}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Fail when the tag does not match the script version
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          VERSION="${{ steps.script.outputs.version }}"
+          if [ "${TAG#v}" != "$VERSION" ]; then
+            echo "::error::Tag $TAG does not match @version $VERSION in the script."
+            exit 1
+          fi
+
+      - name: Create the release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: PinterestUI+ ${{ steps.tag.outputs.tag }}
+          files: pinterestui-plus.user.js
+          generate_release_notes: true
+          body: |
+            Install `pinterestui-plus.user.js` from the assets below, or install it
+            straight from the raw URL:
+
+            https://raw.githubusercontent.com/jabar-reda/pinterestui-plus/main/pinterestui-plus.user.js
+
+            The script declares `@updateURL` and `@downloadURL`, so your userscript
+            manager checks for new versions on its own.
